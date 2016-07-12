@@ -9,7 +9,6 @@ func main() {
 	total := 0
 	n := 4000000
 	for var1 <= n {
-		fmt.Println(var1)
 		if var1%2 == 0 {
 			fmt.Print("adding\n")
 			total += var1
