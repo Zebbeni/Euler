@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 func main() {
 	end, factor, prod := 20, 0, 1
@@ -26,7 +29,7 @@ func main() {
 
 func chop(num int) int {
 	a := 2
-	for a < num {
+	for a < int(math.Sqrt(float64(num)))+1 {
 		if num%a == 0 {
 			return a
 		}
