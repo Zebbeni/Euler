@@ -16,34 +16,26 @@ func main() {
 	max := 0
 	nums = parseToIntSlice(source)
 	for i := 0; i < len(nums); i++ {
-		fmt.Println()
-		fmt.Println()
-		fmt.Println("i:", i)
-		max = maxVal(max, getSum(i, 1, 0))  // 0
-		max = maxVal(max, getSum(i, 1, -1)) // 45
-		max = maxVal(max, getSum(i, 0, 1))  // 90
-		max = maxVal(max, getSum(i, 1, 1))  // 315
+		max = maxVal(max, getProd(i, 1, 0))  // 0
+		max = maxVal(max, getProd(i, 1, -1)) // 45
+		max = maxVal(max, getProd(i, 0, 1))  // 90
+		max = maxVal(max, getProd(i, 1, 1))  // 315
 	}
 	fmt.Println("max:", max)
 }
 
-func getSum(n, xoff, yoff int) int {
-	sum := int(nums[n])
+func getProd(n, xoff, yoff int) int {
+	prod := int(nums[n])
 	i := n
 	if isOutsideTable(n, xoff, yoff) {
-		fmt.Print("\n---")
 		return 0
 	}
-	fmt.Println()
-	fmt.Print(sum)
 	for count := 0; count < goal-1; count++ {
 		i += xoff
 		i += (yoff * dim)
-		sum += int(nums[i])
-		fmt.Print(" + ", int(nums[i]))
+		prod *= int(nums[i])
 	}
-	fmt.Print(" = ", sum)
-	return sum
+	return prod
 }
 
 func isOutsideTable(n, xoff, yoff int) bool {
