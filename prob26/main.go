@@ -4,7 +4,7 @@ import "fmt"
 
 func main() {
 	maxDen, max, cycle := 1, 0, 1
-	for i := 980; i < 990; i++ {
+	for i := 2; i < 1000; i++ {
 		cycle = calcCycle(i)
 		if cycle > max {
 			max = cycle
