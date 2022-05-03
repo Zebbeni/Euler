@@ -12,50 +12,65 @@ const (
 	maxTries = 50
 )
 
-// a map of numbers and whether they've been found to be Lychrel or non-Lychrel
-// true if Lychrel, false if Non-Lychrel
+// a map of numbers to a value indicating whether that number has been found to be
+// Lychrel or non-Lychrel. Value is set to the number of reverse-and-add iterations
+// needed to find a palindrome for the given number (-1 for Lychrel numbers)
 // (ie. a reverse-and-add iteration resulted in a palindrome)
-var lychrelTestMap = make(map[string]bool)
+var lychrelTestMap = make(map[string]int)
 
 func main() {
 	lychrelCount := 0
 	for i := maxNum; i >= minNum; i-- {
 		fmt.Printf("\ni = %d:", i)
-		isLychrel := testLychrel(i)
-		lychrelTestMap[strconv.Itoa(i)] = isLychrel
+		isLychrel, tries := testLychrel(i)
+		lychrelTestMap[strconv.Itoa(i)] = tries
 		if isLychrel {
 			lychrelCount++
 		}
 	}
-	fmt.Printf("\nLychrel numbers found: %d", lychrelCount)
+	fmt.Printf("\nLychrel numbers found: %d\n", lychrelCount)
 }
 
-func testLychrel(x int) bool {
+// determines if a given integer x is Lychrel and- if not- the number of
+// reverse-and-add iterations needed to find a palindrome starting with x
+// returns 0 if Lychrel
+func testLychrel(x int) (bool, int) {
 	n := big.NewInt(int64(x))
-	for tries := 0; tries < maxTries; tries++ {
+
+	nString := n.String()
+	if isPalindrome(nString) {
+		lychrelTestMap[nString] = 0
+		return false, 0
+	}
+
+	for tries := 1; tries <= maxTries; tries++ {
 		nReverse := reverse(n)
 		sum := big.NewInt(0).Add(n, nReverse)
-		fmt.Printf("\n  (%2d)...%d + %d = %d", tries+1, n, nReverse, sum)
+		fmt.Printf("\n  %2d.) %d + %d = %d", tries, n, nReverse, sum)
 
 		sumString := sum.String()
-		if isLychrel, isKnown := lychrelTestMap[sumString]; isKnown {
-			toPrint := "non-lychrel"
-			if isLychrel {
-				toPrint = "lychrel"
+		if itersToPalindrome, isKnown := lychrelTestMap[sumString]; isKnown {
+			if itersToPalindrome == -1 {
+				fmt.Printf("... known lychrel!")
+				return true, -1
 			}
-			fmt.Printf("... known %s", toPrint)
+			if itersToPalindrome+tries > maxTries {
+				fmt.Printf("... new lychrel found, too many tries needed!")
+				return true, -1
+			}
+			fmt.Printf("... known non-lychrel! %d + %d", tries, itersToPalindrome)
+			return false, itersToPalindrome + tries
 
-			return isLychrel
 		}
 
 		if isPalindrome := isPalindrome(sumString); isPalindrome {
 			fmt.Printf("... new non-lychrel!")
-			return false
+			return false, tries
 		}
 		n = sum
 	}
 	fmt.Printf("... new lychrel found!")
-	return true
+	return true, -1
 }
 
 func reverse(x *big.Int) *big.Int {
