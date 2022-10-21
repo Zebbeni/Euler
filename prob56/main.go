@@ -9,7 +9,7 @@ import (
 func main() {
 	maxDigitalSum := 0
 	for a := 1; a < 100; a++ {
-		bigA := big.NewInt(int64(a)) // stay consistent
+		bigA := big.NewInt(int64(a))
 		prodA := bigA
 		for b := 2; b < 100; b++ {
 			prodA = big.NewInt(0).Mul(prodA, bigA)
